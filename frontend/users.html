@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Users</title>
+
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+
+</head>
+<style>
+
+</style>
+
+<body class="bg-gray-50">
+
+
+    <div class="header w-full z-50 bg-white flex justify-between items-center gap-5 px-6 py-4 border-b border-gray-300">
+
+        <div class="left-logo-side flex items-center">
+
+            <img src="./images/logo-asimus.png" alt="Asimus" class="w-12">
+
+            <h3 class="text-blue-700 text-xl">
+                Asimus
+            </h3>
+
+        </div>
+
+    </div>
+
+
+    <main class="mt-5 px-9 flex justify-between items-center">
+
+        <a href="./index.html" class="text-gray-500 hover:text-blue-700 flex items-center gap-1">
+
+            <div class="w-4 h-4 shrink-0 bg-gray-500 hover:bg-blue-700" style="
+                    mask-image: url('./images/home.png');
+                    mask-size: contain;
+                    mask-repeat: no-repeat;
+                    mask-position: center;
+
+                    -webkit-mask-image: url('./images/home.png');
+                    -webkit-mask-size: contain;
+                    -webkit-mask-repeat: no-repeat;
+                    -webkit-mask-position: center;
+                "></div>
+
+            Back to home
+
+        </a>
+
+    </main>
+    <h2>Change username</h2>
+
+    <input id="putId" placeholder="User ID">
+    <input id="newUsername" placeholder="New username">
+    <button id="putBtn">Change</button>
+
+    <h2>Delete user</h2>
+
+    <input id="deleteId" placeholder="User ID">
+    <button id="deleteBtn">Delete</button>
+
+    <main class="px-9 mt-8">
+
+        <div id="users" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+        </div>
+
+    </main>
+
+
+    <script>
+        const usersContainer = document.getElementById("users");
+        async function getUsers() {
+            const response = await fetch(
+                "http://localhost:3000/users"
+            );
+            const users = await response.json();
+            usersContainer.innerHTML = "";
+            users.forEach(user => {
+                usersContainer.innerHTML += `
+        <div>
+            <h2>
+                ID: ${user.id}
+            </h2>
+            <h2>
+                User: ${user.username}
+            </h2>
+            <p>
+                Email: ${user.email}
+            </p>
+        </div>
+    `;
+            });
+        }
+        getUsers();
+        document.getElementById("putBtn").addEventListener("click", async () => {
+            const id = document.getElementById("putId").value;
+            const username = document.getElementById("newUsername").value;
+
+            const response = await fetch(`http://localhost:3000/users/${id}`, {
+                method: "PUT",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    username: username
+                })
+            });
+
+            const data = await response.json();
+
+            alert(data.message);
+
+            getUsers();
+        });
+        document.getElementById("deleteBtn").addEventListener("click", async () => {
+            const id = document.getElementById("deleteId").value;
+
+            const response = await fetch(`http://localhost:3000/users/${id}`, {
+                method: "DELETE"
+            });
+
+            const data = await response.json();
+
+            alert(data.message);
+
+            getUsers();
+        });
+    </script>
+</body>
+
+</html>

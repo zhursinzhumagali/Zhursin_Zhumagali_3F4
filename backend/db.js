@@ -1,0 +1,12 @@
+import pg from "pg";
+
+const { Pool } = pg;
+
+const pool = new Pool({
+    host: "localhost",
+    port: 5432,
+    database: "users_api",
+    user: "peri"
+});
+
+export default pool;
